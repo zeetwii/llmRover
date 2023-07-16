@@ -1,0 +1,36 @@
+# Note, this is just a sample file.  Copy it and rename it into a normal config.yml file before adding credentials.  
+
+# Twitch Configs
+twitch:
+  # from twitch
+  ACCESS_TOKEN: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+  # from twitch
+  CLIENT_ID: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+  # how you want the bot name to appear in the channel - can change capitalization, but the name must be the same as the bot account
+  BOT_NICK: examplebotname
+
+  # The prefix that you want to use to denote a chatbot command.
+  BOT_PREFIX: '!'
+
+  # The prefix that you want to use to denote a chatbot command.
+  CHANNEL:
+    - examplechannelname # This can be a list with multiple channels to connect to.  For most of our code we only look at Channel[0] because the bot has to run on the same box as the hardware
+
+# Chatbot Configs
+openai:
+  # from account
+  API_KEY: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+  # The string to use as context
+  CONTEXT: 'input something here'
+
+# These are used to add context to actions
+audio:
+  background: 
+    - 'audio/bensoundScifi.wav'
+    - 'audio/SpaceAmbience.wav'
+    - 'audio/Futuristic1.wav'
+    - 'audio/EonAmbient.wav'
+    - 'audio/SirusBeatOne.wav'
