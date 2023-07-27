@@ -33,9 +33,9 @@ def resetStuff():
     servo.move_servo_position(0, 90, 180) # face camera forward
     GPIO.output(20, GPIO.LOW) # turn off smoke machine
     GPIO.output(21, GPIO.LOW) # turn off air pump
-    myMotor.set_drive(0,0,0) # turn off right motors
-    myMotor.set_drive(1,0,0) # turn off left motors
-    time.sleep(1)
+    #myMotor.set_drive(0,0,0) # turn off right motors
+    #myMotor.set_drive(1,0,0) # turn off left motors
+    time.sleep(.1)
 
 
 #The controller program needs an initialization status callback function to send status codes
