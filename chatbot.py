@@ -4,6 +4,7 @@ from twitchio.ext import commands # needed for twitchIO chatbot
 import openai # needed for ChatGPT API
 import threading # needed for threading
 import yaml # needed for config
+import socket # needed for udp
 
 
 
@@ -13,6 +14,9 @@ class ChatBot(commands.Bot):
         # Initialise our Bot with our access token, prefix and a list of channels to join on boot...
         # prefix can be a callable, which returns a list of strings or a string...
         # initial_channels can also be a callable which returns a list of strings...
+
+        self.roverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.roverAddress = ('rover.local', 7331)
 
         openai.api_key = openAIkey
         self.driveContext = driveContext
@@ -68,12 +72,8 @@ class ChatBot(commands.Bot):
             
             print(f"ChatGPT: {reply}")  
 
-            msg = "\n\nmessage data: \n"
-            for line in str(reply).splitlines():
-                data = line.split(']')[0]
-                msg = msg + data + ']' + '\n'
+            self.roverSocket.sendto(str.encode(reply), self.roverAddress)
 
-            print(msg)  
             await ctx.send(f'ChatGPT: {reply}')
 
     # Camera command, used to pan the camera
