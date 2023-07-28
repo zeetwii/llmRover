@@ -67,8 +67,14 @@ class ChatBot(commands.Bot):
             reply = chat.choices[0].message.content
             
             print(f"ChatGPT: {reply}")  
-  
-        await ctx.send(f'ChatGPT: {reply}')
+
+            msg = "\n\nmessage data: \n"
+            for line in str(reply).splitlines():
+                data = line.split(']')[0]
+                msg = msg + data + ']' + '\n'
+
+            print(msg)  
+            await ctx.send(f'ChatGPT: {reply}')
 
     # Camera command, used to pan the camera
     @commands.command()
