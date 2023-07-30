@@ -27,6 +27,7 @@ class Rover:
         self.L_MTR = 1
         self.FWD = 0
         self.BWD = 1
+        self.maxSpeed = 250
         self.myMotor.begin()
         time.sleep(.250) # Zero Motor Speeds
         self.myMotor.set_drive(0,0,0)
@@ -52,8 +53,8 @@ class Rover:
                 if len(command) >= 3:
 
                     if command[0] == 'Forward':
-                        self.myMotor.set_drive(self.R_MTR, self.FWD, 255)
-                        self.myMotor.set_drive(self.L_MTR, self.FWD, 255)
+                        self.myMotor.set_drive(self.R_MTR, self.FWD, self.maxSpeed)
+                        self.myMotor.set_drive(self.L_MTR, self.FWD, self.maxSpeed)
                         
                         sleepTime = command[2].split()[0]
 
@@ -62,8 +63,8 @@ class Rover:
                         self.myMotor.set_drive(self.L_MTR, self.FWD, 0)
                             
                     elif command[0] == 'Reverse':
-                        self.myMotor.set_drive(self.R_MTR, self.BWD, 255)
-                        self.myMotor.set_drive(self.L_MTR, self.BWD, 255)
+                        self.myMotor.set_drive(self.R_MTR, self.BWD, self.maxSpeed)
+                        self.myMotor.set_drive(self.L_MTR, self.BWD, self.maxSpeed)
                         
                         sleepTime = command[2].split()[0]
 
@@ -80,11 +81,11 @@ class Rover:
                         print(str(runTime))
 
                         if angle > 0: # Turn Right
-                            self.myMotor.set_drive(self.R_MTR, self.BWD, 255)
-                            self.myMotor.set_drive(self.L_MTR, self.FWD, 255)
+                            self.myMotor.set_drive(self.R_MTR, self.BWD, self.maxSpeed)
+                            self.myMotor.set_drive(self.L_MTR, self.FWD, self.maxSpeed)
                         else: # Turn Left
-                            self.myMotor.set_drive(self.R_MTR, self.FWD, 255)
-                            self.myMotor.set_drive(self.L_MTR, self.BWD, 255)
+                            self.myMotor.set_drive(self.R_MTR, self.FWD, self.maxSpeed)
+                            self.myMotor.set_drive(self.L_MTR, self.BWD, self.maxSpeed)
                         
                         time.sleep(runTime)
                         self.myMotor.set_drive(self.R_MTR, self.FWD, 0)

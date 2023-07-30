@@ -103,32 +103,32 @@ def rightMotorChangeHandler(valLR, valUD):
     mul = 1.2 # so that max speed happens slightly before joystick is max
     
     if valUD < 0: # go forward
-        speed = math.ceil( 255 * (-1 * valUD * mul) )
-        if speed >= 254:
-            speed = 254
+        speed = math.ceil( 250 * (-1 * valUD * mul) )
+        if speed >= 250:
+            speed = 250
         myMotor.set_drive(R_MTR,FWD,speed)
     else: # go backwards
-        speed = math.ceil( 255 * (valUD * mul) )
-        if speed >= 254:
-            speed = 254
+        speed = math.ceil( 250 * (valUD * mul) )
+        if speed >= 250:
+            speed = 250
         myMotor.set_drive(R_MTR,BWD,speed)
-    time.sleep(0.25) # too many speed changes at once crashes the system
+    time.sleep(0.1) # too many speed changes at once crashes the system
 
 def leftMotorChangeHandler(valLR, valUD):
     """ Handler function for the Left joystick """
     mul = 1.2 # so that max speed happens slightly before joystick is max
     
     if valUD < 0: # go forward
-        speed = math.ceil( 255 * (-1 * valUD * mul) )
-        if speed >= 254:
-            speed = 254
+        speed = math.ceil( 250 * (-1 * valUD * mul) )
+        if speed >= 250:
+            speed = 250
         myMotor.set_drive(L_MTR,FWD,speed)
     else: # go backwards
-        speed = math.ceil( 255 * (valUD * mul) )
-        if speed >= 254:
-            speed = 254
+        speed = math.ceil( 250 * (valUD * mul) )
+        if speed >= 250:
+            speed = 250
         myMotor.set_drive(L_MTR,BWD,speed)
-    time.sleep(0.25) # too many speed changes at once crashes the system
+    time.sleep(0.1) # too many speed changes at once crashes the system
 
 
 
