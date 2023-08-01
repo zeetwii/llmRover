@@ -21,7 +21,7 @@ class OtterBot:
 
         if commandType <= 90: # do a movement command
             
-            msg = "!drive " # beginning of a drive command
+            msg = "!move " # beginning of a move command
 
             messageLength = random.randint(1, 4) # how many commands are within the message
 
