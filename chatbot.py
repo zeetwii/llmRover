@@ -28,7 +28,7 @@ class ChatBot(commands.Bot):
         # Notify us when everything is ready!
         # We are logged in and ready to chat and use commands...
         print(f'Logged in as | {self.nick}')
-        print(f'User id is | {self.user_id}')
+        await self.connected_channels[0].send('Rover chatbot connected and listening!')
 
         
 
@@ -122,7 +122,7 @@ if __name__ == "__main__":
         CFG = yaml.safe_load(ymlfile)
 
     twitch_initial_channels = CFG["twitch"]["CHANNEL"]
-    twitch_prefix = initial_channels = CFG["twitch"]["BOT_PREFIX"]
+    twitch_prefix = CFG["twitch"]["BOT_PREFIX"]
     twitch_access_token = CFG["twitch"]["ROVER_ACCESS_TOKEN"]
 
     openai_key = CFG["openai"]["API_KEY"]
