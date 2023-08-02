@@ -105,7 +105,7 @@ class ChatBot(commands.Bot):
 
     # Audio command, used to control background audio
     @commands.command()
-    async def audio(self, ctx: commands.Context):
+    async def music(self, ctx: commands.Context):
         
         await ctx.send(f'audio command to be added')
 
