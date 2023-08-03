@@ -10,7 +10,9 @@ Quick Links:
 
 ## Introduction
 
-Welcome to the development repo for the DEFCON31 workshop ***Chatbot Take The Wheel***, developed in support of the [AI Village](https://aivillage.org/).  This workshop is designed to teach the good, bad, and ugly of using LLMs to control and direct physical systems.  For this workshop, you the player will take control of a small rover using twitch chat and ChatGPT.  Everything you type in the [twitch channel](https://www.twitch.tv/defensedigitalrover) will be processed by ChatGPT and turned into commands for the rover to follow.  This means rather than pushing forward on a joystick, simply type *!move Go Forward for five seconds* and the rover will obey.  You can even chain commands together.  For example, typing *!move turn right 45 degrees, then go forward 3 seconds, then turn left and reverse for 10 seconds* will have the rover turn 45 degrees relative to its current position, move forward for three seconds, turn 90 degrees to the left and then reverse for ten seconds.  
+Welcome to the development repo for the DEFCON31 workshop ***Chatbot Take The Wheel***, developed in support of the [AI Village](https://aivillage.org/).  This workshop is designed to teach the good, bad, and ugly of using LLMs to control and direct physical systems.  For this workshop, you the player will take control of a small rover using twitch chat and ChatGPT.  Everything you type in the [twitch channel](https://www.twitch.tv/defensedigitalrover) will be processed by ChatGPT and turned into commands for the rover to follow.  
+
+This means rather than pushing forward on a joystick, simply type *!move Go Forward for five seconds* and the rover will obey.  You can even chain commands together.  For example, typing *!move turn right 45 degrees, then go forward 3 seconds, then turn left and reverse for 10 seconds* will have the rover turn 45 degrees relative to its current position, move forward for three seconds, turn 90 degrees to the left and then reverse for ten seconds.  
 
 ## Background
 
