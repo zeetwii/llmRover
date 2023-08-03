@@ -1,10 +1,11 @@
 # Chatbot Take the Wheel
 
 Quick Links:
-[Introduction](#introduction)
-[Background](#background)
-[Game Play](#game-play)
-[Attack Walkthrough](#attack-walkthrough)
+
+- [Introduction](#introduction)
+- [Background](#background)
+- [Game Play](#game-play)
+- [Attack Walkthrough](#attack-walkthrough)
 
 
 ## Introduction
