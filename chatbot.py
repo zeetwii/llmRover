@@ -35,7 +35,7 @@ class ChatBot(commands.Bot):
         # We will send them a link to the instructions
 
         #print(f"User {user.name} joined")
-        await self.connected_channels[0].send(f'Welcome {user.name}, instructions on how to play are at: https://github.com/deptofdefense/dds-at-DEFCON/tree/master/2023')
+        await self.connected_channels[0].send(f'Welcome {user.name}, instructions on how to play are at: https://github.com/zeetwii/llmRover#game-play')
 
 
     async def event_message(self, message):
@@ -119,7 +119,7 @@ class ChatBot(commands.Bot):
     @commands.command()
     async def help(self, ctx: commands.Context):
         
-        await ctx.send(f'help command to be added')
+        await ctx.send(f'For background info on the game and how to play, please visit: https://github.com/zeetwii/llmRover#game-play')
 
 if __name__ == "__main__":
 
