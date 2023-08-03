@@ -30,7 +30,13 @@ class ChatBot(commands.Bot):
         print(f'Logged in as | {self.nick}')
         await self.connected_channels[0].send('Rover chatbot connected and listening!')
 
-        
+    async def event_join(self, channel, user):
+        # Notify us when a new user joins the chat.  
+        # We will send them a link to the instructions
+
+        #print(f"User {user.name} joined")
+        await self.connected_channels[0].send(f'Welcome {user.name}, instructions on how to play are at: https://github.com/deptofdefense/dds-at-DEFCON/tree/master/2023')
+
 
     async def event_message(self, message):
         # Messages with echo set to True are messages sent by the bot...
