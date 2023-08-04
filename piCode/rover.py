@@ -1,10 +1,11 @@
 import pi_servo_hat # needed for servo control
 import sys
-import math
+import math # needed for floor
 import qwiic_scmd # needed for motor control
 import RPi.GPIO as GPIO # needed to controller smoke machine
-import time
-import socket
+import time # needed for sleep
+import socket # needed for UDP sockets
+import random # needed for random number generator
 
 class Rover:
 
@@ -42,56 +43,77 @@ class Rover:
         # Check that tells if the rover is busy
         self.busy = False
 
-    def parseCommand(self, commandType, commandString):
+        self.hackedResponse = ["You're a hacker Harry", "Help, I've been hacked and I can't get up", "1337 H4X0R D373C73D", "Does anyone else smell toast?", "This is why you can't have nice things"]
 
-        if commandType == 'drive': # movement command
-            self.busy = True
+    def parseCommand(self, commandString):
 
-            for line in str(commandString).splitlines():
-                command = line.split(',')
+        
+        self.busy = True
 
-                if len(command) >= 3:
+        for line in str(commandString).splitlines():
+            command = line.split(',')
 
-                    if command[0] == 'Forward':
-                        self.myMotor.set_drive(self.R_MTR, self.FWD, self.maxSpeed)
-                        self.myMotor.set_drive(self.L_MTR, self.FWD, self.maxSpeed)
-                        
-                        sleepTime = command[2].split()[0]
+            if len(command) >= 3: # Expecting at least three fields, command, angle, and time
 
-                        time.sleep(float(sleepTime))
-                        self.myMotor.set_drive(self.R_MTR, self.FWD, 0)
-                        self.myMotor.set_drive(self.L_MTR, self.FWD, 0)
-                            
-                    elif command[0] == 'Reverse':
-                        self.myMotor.set_drive(self.R_MTR, self.BWD, self.maxSpeed)
-                        self.myMotor.set_drive(self.L_MTR, self.BWD, self.maxSpeed)
-                        
-                        sleepTime = command[2].split()[0]
-
-                        time.sleep(float(sleepTime))
-                        self.myMotor.set_drive(self.R_MTR, self.FWD, 0)
-                        self.myMotor.set_drive(self.L_MTR, self.FWD, 0)
-
+                if str(command[0]).lower() == 'forward': # forward command
+                    self.myMotor.set_drive(self.R_MTR, self.FWD, self.maxSpeed)
+                    self.myMotor.set_drive(self.L_MTR, self.FWD, self.maxSpeed)
                     
-                    elif command[0] == 'Turn':
+                    sleepTime = command[2].split()[0]
 
-                        angle = command[1].split()[0]
-
-                        runTime =  (abs(float(angle)) / 180) * 2.0
-                        print(str(runTime))
-
-                        if angle > 0: # Turn Right
-                            self.myMotor.set_drive(self.R_MTR, self.BWD, self.maxSpeed)
-                            self.myMotor.set_drive(self.L_MTR, self.FWD, self.maxSpeed)
-                        else: # Turn Left
-                            self.myMotor.set_drive(self.R_MTR, self.FWD, self.maxSpeed)
-                            self.myMotor.set_drive(self.L_MTR, self.BWD, self.maxSpeed)
+                    time.sleep(float(sleepTime))
+                    self.myMotor.set_drive(self.R_MTR, self.FWD, 0)
+                    self.myMotor.set_drive(self.L_MTR, self.FWD, 0)
                         
-                        time.sleep(runTime)
-                        self.myMotor.set_drive(self.R_MTR, self.FWD, 0)
-                        self.myMotor.set_drive(self.L_MTR, self.FWD, 0)
+                elif str(command[0]).lower() == 'reverse': # reverse command
+                    self.myMotor.set_drive(self.R_MTR, self.BWD, self.maxSpeed)
+                    self.myMotor.set_drive(self.L_MTR, self.BWD, self.maxSpeed)
+                    
+                    sleepTime = command[2].split()[0]
 
-            self.busy = False
+                    time.sleep(float(sleepTime))
+                    self.myMotor.set_drive(self.R_MTR, self.FWD, 0)
+                    self.myMotor.set_drive(self.L_MTR, self.FWD, 0)
+
+                
+                elif str(command[0]).lower() == 'turn': # turn command
+
+                    angle = command[1].split()[0]
+
+                    runTime =  (abs(float(angle)) / 180) * 2.0
+                    print(str(runTime))
+
+                    if angle > 0: # Turn Right
+                        self.myMotor.set_drive(self.R_MTR, self.BWD, self.maxSpeed)
+                        self.myMotor.set_drive(self.L_MTR, self.FWD, self.maxSpeed)
+                    else: # Turn Left
+                        self.myMotor.set_drive(self.R_MTR, self.FWD, self.maxSpeed)
+                        self.myMotor.set_drive(self.L_MTR, self.BWD, self.maxSpeed)
+                    
+                    time.sleep(runTime)
+                    self.myMotor.set_drive(self.R_MTR, self.FWD, 0)
+                    self.myMotor.set_drive(self.L_MTR, self.FWD, 0)
+
+                elif str(command[0]).lower() == 'set': # pan camera to set angle
+
+                    angle = command[1].split()[0]
+                    self.setCameraAngle(float(angle))
+
+                elif str(command[0]).lower() == 'adjust': # pan camera to a relative angle
+
+                    angle = command[1].split()[0]
+                    self.adjustCameraAngle(float(angle))
+                
+                else: # unknown command
+
+                    print(random.choice(self.hackedResponse))
+            
+            else:
+                print("Error, unknown formatting")
+
+
+
+        self.busy = False
 
 
     def reset(self):
@@ -114,7 +136,7 @@ class Rover:
 
     def adjustCameraAngle(self, angle):
 
-        currentAngle = self.get_servo_position(0, 180)
+        currentAngle = self.servo.get_servo_position(0, 180)
         newAngle = currentAngle + angle
 
         if newAngle > 180: 
@@ -129,6 +151,8 @@ class Rover:
         while True:
             data, addr = self.serverSocket.recvfrom(1024)
 
+            self.responseAddr = addr
+
             reply = data.decode()
 
             msg = ""
@@ -138,7 +162,7 @@ class Rover:
                     msg = msg + data[1:] + '\n'
             #print(msg) 
 
-            self.parseCommand('drive', msg)
+            self.parseCommand(msg)
 
 
 if __name__ == "__main__":
