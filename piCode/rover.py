@@ -14,6 +14,8 @@ class Rover:
         # UDP Socket
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.serverSocket.bind(('0.0.0.0', 7331))
+
+        self.responseSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
         # Smoke Machine
         GPIO.setmode(GPIO.BCM)
@@ -26,8 +28,8 @@ class Rover:
         self.myMotor = qwiic_scmd.QwiicScmd()
         self.R_MTR = 0
         self.L_MTR = 1
-        self.FWD = 0
-        self.BWD = 1
+        self.FWD = 1
+        self.BWD = 0
         self.maxSpeed = 250
         self.myMotor.begin()
         time.sleep(.250) # Zero Motor Speeds
@@ -78,10 +80,10 @@ class Rover:
                 
                 elif str(command[0]).lower() == 'turn': # turn command
 
-                    angle = command[1].split()[0]
+                    angle = float(command[1].split()[0])
 
                     runTime =  (abs(float(angle)) / 180) * 2.0
-                    print(str(runTime))
+                    #print(str(runTime))
 
                     if angle > 0: # Turn Right
                         self.myMotor.set_drive(self.R_MTR, self.BWD, self.maxSpeed)
@@ -105,16 +107,32 @@ class Rover:
                     self.adjustCameraAngle(float(angle))
                 
                 else: # unknown command
-
-                    print(random.choice(self.hackedResponse))
+                    chatResponse = random.choice(self.hackedResponse)
+                    print(chatResponse)
+                    self.responseSocket.sendto(str.encode(chatResponse), (self.responseAddr, 7331))
+                    self.smoker(10)
             
             else:
-                print("Error, unknown formatting")
-
+                print(f"Error, unknown formatting: {line}")
 
 
         self.busy = False
 
+    def smoker(self, runTime):
+
+        time.sleep(0.25)
+        self.myMotor.set_drive(0,0,0)
+        self.myMotor.set_drive(1,0,0)
+        time.sleep(0.25)
+        GPIO.output(20, GPIO.HIGH) # turn on smoke machine
+        GPIO.output(21, GPIO.HIGH) # turn on air pump
+
+        time.sleep(float(runTime))
+
+        GPIO.output(20, GPIO.LOW) # turn off smoke machine
+        GPIO.output(21, GPIO.LOW) # turn off air pump
+        self.myMotor.set_drive(0,0,0)
+        self.myMotor.set_drive(1,0,0)
 
     def reset(self):
         
@@ -149,20 +167,26 @@ class Rover:
     def socketListener(self):
 
         while True:
+
+            #print("Listening")
             data, addr = self.serverSocket.recvfrom(1024)
 
-            self.responseAddr = addr
+            self.responseAddr = addr[0]
+
+            #print(str(self.responseAddr))
 
             reply = data.decode()
 
-            msg = ""
+            if len(reply) > 0: 
 
-            for line in str(reply).splitlines():
-                    data = line.split(']')[0]
-                    msg = msg + data[1:] + '\n'
-            #print(msg) 
+                msg = ""
 
-            self.parseCommand(msg)
+                for line in str(reply).splitlines():
+                        data = line.split(']')[0]
+                        msg = msg + data[1:] + '\n'
+                #print(msg) 
+
+                self.parseCommand(msg)
 
 
 if __name__ == "__main__":

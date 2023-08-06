@@ -2,11 +2,10 @@
 
 from twitchio.ext import commands # needed for twitchIO chatbot
 import openai # needed for ChatGPT API
-import threading # needed for threading
+from threading import Thread # needed for multithreading
 import yaml # needed for config
 import socket # needed for udp
-
-
+import asyncio # needed for async thread
 
 class ChatBot(commands.Bot):
 
@@ -15,14 +14,35 @@ class ChatBot(commands.Bot):
         # prefix can be a callable, which returns a list of strings or a string...
         # initial_channels can also be a callable which returns a list of strings...
 
-        self.roverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # UDP Sockets
+        self.roverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) #Socket to send commands to rover
         self.roverAddress = ('rover.local', 7331)
+
+        self.responseSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # Dedicated socket to listen to rover responses
+        self.responseSocket.bind(('0.0.0.0', 7331))
+
+        # Starts listener socket thread
+        self.responseThread = Thread(target=asyncio.run, args=(self.roverResponse(),), daemon=True)
+        self.responseThread.start()
 
         openai.api_key = openAIkey
         self.driveContext = driveContext
         self.cameraContext = lookContext
 
         super().__init__(token=accessToken, prefix=prefix, initial_channels=channelList)
+
+
+    async def roverResponse(self):
+
+        while True: # Listen for response from rover
+            data, addr = self.responseSocket.recvfrom(1024)
+
+            reply = data.decode()
+
+            if len(reply) > 0:
+                print(reply)
+                await self.connected_channels[0].send(f'{reply}')
+
 
     async def event_ready(self):
         # Notify us when everything is ready!

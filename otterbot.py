@@ -5,7 +5,7 @@ import random # needed to randomize messages
 from threading import Thread # needed for multithreading
 from twitchio.ext import commands # needed for twitchIO chatbot
 import yaml # needed for config
-import asyncio
+import asyncio # needed for async thread
 
 class OtterBot(commands.Bot):
     """
@@ -65,6 +65,7 @@ class OtterBot(commands.Bot):
                 randMsg = self.generateMessage()
                 await self.connected_channels[0].send(f'{randMsg}')
                 print(randMsg)
+                self.lastTransmissionTime = time.time()
                 time.sleep(1)
 
             
