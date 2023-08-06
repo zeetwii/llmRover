@@ -83,7 +83,7 @@ class Rover:
                     angle = float(command[1].split()[0])
 
                     runTime =  (abs(float(angle)) / 180) * 2.0
-                    #print(str(runTime))
+                    print(str(runTime))
 
                     if angle > 0: # Turn Right
                         self.myMotor.set_drive(self.R_MTR, self.BWD, self.maxSpeed)
@@ -126,6 +126,7 @@ class Rover:
         time.sleep(0.25)
         GPIO.output(20, GPIO.HIGH) # turn on smoke machine
         GPIO.output(21, GPIO.HIGH) # turn on air pump
+        
 
         time.sleep(float(runTime))
 
