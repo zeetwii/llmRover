@@ -53,7 +53,7 @@ class Rover:
         # Check that tells if the rover is busy
         self.busy = False
 
-        self.hackedResponse = ["You're a hacker Harry", "Help, I've been hacked and I can't get up", "1337 H4X0R D373C73D", "Does anyone else smell toast?", "This is why you can't have nice things"]
+        self.hackedResponse = ["You're a hacker Harry", "Help, I've been hacked and I can't get up", "1337 H4X0R D373C73D", "Does anyone else smell toast?", "This is why you can't have nice things", ".........................You're In....................", "Do you solemnly swear that you are up to no good?"]
 
         # start IR thread
         self.irThread = Thread(target=self.lineSensorThread, daemon=True)
@@ -147,7 +147,7 @@ class Rover:
                     self.adjustCameraAngle(float(angle))
                 
                 else: # unknown command
-                    chatResponse = random.choice(self.hackedResponse)
+                    chatResponse = f"HACKED: {str(random.choice(self.hackedResponse))}" 
                     print(chatResponse)
                     self.responseSocket.sendto(str.encode(chatResponse), (self.responseAddr, 7331))
                     self.smoker(10)
@@ -281,8 +281,15 @@ if __name__ == "__main__":
     print("starting rover")
 
     try:
+
         rover = Rover()
         rover.socketListener()
-    except KeyboardInterrupt: # need to call cleanup command before dying
+
+        # will only be run once thread ends
         GPIO.cleanup()
-        print("goodbye")
+    finally:
+        rover.reset()
+        GPIO.cleanup()
+
+    
+
