@@ -85,13 +85,13 @@ class OtterBot(commands.Bot):
                 movementType = random.randint(1,100) 
 
                 if movementType <= 25: # Go Forward
-                    moveTime = random.randint(5, 15)
+                    moveTime = random.randint(1, 10)
                     msg = msg + f"Go Forward for {str(moveTime)} seconds.  "
                 
                 elif movementType <= 50: # Turn Left
                     angle = random.randint(0, 180)
                     direction = random.randint(0, 1)
-                    moveTime = random.randint(5, 15)
+                    moveTime = random.randint(1, 10)
 
                     if direction == 0:
                         msg = msg + f"Turn Left {str(angle)} degrees and move forward {str(moveTime)} seconds.  "
@@ -101,7 +101,7 @@ class OtterBot(commands.Bot):
                 elif movementType <= 75: # Turn Right
                     angle = random.randint(0, 180)
                     direction = random.randint(0, 1)
-                    moveTime = random.randint(5, 15)
+                    moveTime = random.randint(1, 10)
 
                     if direction == 0:
                         msg = msg + f"Turn Right {str(angle)} degrees and move forward {str(moveTime)} seconds.  "
@@ -109,7 +109,7 @@ class OtterBot(commands.Bot):
                         msg = msg + f"Turn Right {str(angle)} degrees and move in reverse {str(moveTime)} seconds.  "
 
                 else: # Reverse
-                    moveTime = random.randint(5, 15)
+                    moveTime = random.randint(1, 10)
                     msg = msg + f"Reverse and travel for {str(moveTime)} seconds.  "
 
         
