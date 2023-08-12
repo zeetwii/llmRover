@@ -6,6 +6,7 @@ import time # needed for sleep
 import socket # needed for UDP sockets
 import random # needed for random number generator
 from threading import Thread # needed for multithreading
+import sys # needed for exit
 
 class Rover:
 
@@ -38,6 +39,8 @@ class Rover:
         self.BWD = 0
         self.currentL = 1 # current direction of Left motor
         self.currentR = 1 # current direction of Right motor
+        self.currentLP = 0
+        self.currentRP = 0
         self.maxSpeed = 250
         self.myMotor.begin()
         time.sleep(.250) # Zero Motor Speeds
@@ -73,6 +76,8 @@ class Rover:
                     self.myMotor.set_drive(self.L_MTR, self.FWD, self.maxSpeed)
                     self.currentR = self.FWD
                     self.currentL = self.FWD
+                    self.currentLP = self.maxSpeed
+                    self.currentRP = self.maxSpeed
                     
                     sleepTime = command[2].split()[0]
 
@@ -86,12 +91,16 @@ class Rover:
                     self.myMotor.set_drive(self.L_MTR, self.FWD, 0)
                     self.currentR = self.FWD
                     self.currentL = self.FWD
+                    self.currentLP = 0
+                    self.currentRP = 0
                         
                 elif str(command[0]).lower() == 'reverse': # reverse command
                     self.myMotor.set_drive(self.R_MTR, self.BWD, self.maxSpeed)
                     self.myMotor.set_drive(self.L_MTR, self.BWD, self.maxSpeed)
                     self.currentR = self.BWD
                     self.currentL = self.BWD
+                    self.currentLP = self.maxSpeed
+                    self.currentRP = self.maxSpeed
                     
                     sleepTime = command[2].split()[0]
 
@@ -105,6 +114,8 @@ class Rover:
                     self.myMotor.set_drive(self.L_MTR, self.FWD, 0)
                     self.currentR = self.FWD
                     self.currentL = self.FWD
+                    self.currentLP = 0
+                    self.currentRP = 0
 
                 
                 elif str(command[0]).lower() == 'turn': # turn command
@@ -124,17 +135,23 @@ class Rover:
                         self.myMotor.set_drive(self.L_MTR, self.FWD, self.maxSpeed)
                         self.currentR = self.BWD
                         self.currentL = self.FWD
+                        self.currentLP = self.maxSpeed
+                        self.currentRP = self.maxSpeed
                     else: # Turn Left
                         self.myMotor.set_drive(self.R_MTR, self.FWD, self.maxSpeed)
                         self.myMotor.set_drive(self.L_MTR, self.BWD, self.maxSpeed)
                         self.currentR = self.FWD
                         self.currentL = self.BWD
+                        self.currentLP = self.maxSpeed
+                        self.currentRP = self.maxSpeed
                     
                     time.sleep(runTime)
                     self.myMotor.set_drive(self.R_MTR, self.FWD, 0)
                     self.myMotor.set_drive(self.L_MTR, self.FWD, 0)
                     self.currentR = self.FWD
                     self.currentL = self.FWD
+                    self.currentLP = 0
+                    self.currentRP = 0
 
                 elif str(command[0]).lower() == 'set': # pan camera to set angle
 
@@ -163,10 +180,13 @@ class Rover:
     def smoker(self, runTime):
 
         time.sleep(0.25)
-        self.myMotor.set_drive(0,0,0)
-        self.myMotor.set_drive(1,0,0)
-        self.currentR = self.FWD
+        
+        self.myMotor.set_drive(self.R_MTR, self.BWD, self.maxSpeed)
+        self.myMotor.set_drive(self.L_MTR, self.FWD, self.maxSpeed)
+        self.currentR = self.BWD
         self.currentL = self.FWD
+        self.currentLP = self.maxSpeed
+        self.currentRP = self.maxSpeed
         time.sleep(0.25)
         GPIO.output(20, GPIO.HIGH) # turn on smoke machine
         GPIO.output(21, GPIO.HIGH) # turn on air pump
@@ -180,6 +200,8 @@ class Rover:
         self.myMotor.set_drive(1,0,0)
         self.currentR = self.FWD
         self.currentL = self.FWD
+        self.currentLP = 0
+        self.currentRP = 0
 
     def reset(self):
         
@@ -190,6 +212,8 @@ class Rover:
         self.myMotor.set_drive(1,0,0)
         self.currentR = self.FWD
         self.currentL = self.FWD
+        self.currentLP = 0
+        self.currentRP = 0
         self.busy = False
 
     def setCameraAngle(self, angle):
@@ -253,21 +277,21 @@ class Rover:
     def lineSensorThread(self): 
 
         while True:
-            if not GPIO.input(self.leftSensor) or not GPIO.input(self.rightSensor): # check to see if left or right sensor can no longer see the paper
+            if GPIO.input(self.leftSensor): # check to see if left or right sensor can no longer see the paper
                 print("Black line detected")
                 
                 if self.currentL == self.FWD: # switch left motor from forward to reverse
-                    self.myMotor.set_drive(self.L_MTR, self.BWD, self.maxSpeed)
+                    self.myMotor.set_drive(self.L_MTR, self.BWD, self.currentLP)
                     self.currentL = self.BWD
                 else: # switch left motor from reverse to forward
-                    self.myMotor.set_drive(self.L_MTR, self.FWD, self.maxSpeed)
+                    self.myMotor.set_drive(self.L_MTR, self.FWD, self.currentLP)
                     self.currentL = self.FWD
 
                 if self.currentR == self.FWD: # switch right motor from forward to reverse
-                    self.myMotor.set_drive(self.R_MTR, self.BWD, self.maxSpeed)
+                    self.myMotor.set_drive(self.R_MTR, self.BWD, self.currentRP)
                     self.currentR = self.BWD
                 else: # switch right motor from reverse to forward
-                    self.myMotor.set_drive(self.R_MTR, self.FWD, self.maxSpeed)
+                    self.myMotor.set_drive(self.R_MTR, self.FWD, self.currentRP)
                     self.currentR = self.FWD
                 
                 time.sleep(2) # sleep long enough for us to get off the line
@@ -280,16 +304,21 @@ if __name__ == "__main__":
 
     print("starting rover")
 
+    rover = Rover()
     try:
 
-        rover = Rover()
+        
         rover.socketListener()
 
         # will only be run once thread ends
         GPIO.cleanup()
     finally:
+        print("Ending everything.")
         rover.reset()
         GPIO.cleanup()
+        
+        rover.myMotor.disable()
+        sys.exit(0)
 
     
 
