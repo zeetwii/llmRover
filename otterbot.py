@@ -78,7 +78,7 @@ class OtterBot(commands.Bot):
             
             msg = "!move " # beginning of a move command
 
-            messageLength = random.randint(1, 4) # how many commands are within the message
+            messageLength = random.randint(1, 2) # how many commands are within the message
 
             for i in range(messageLength): 
                 
