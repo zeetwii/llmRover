@@ -19,7 +19,7 @@ class ChatBot(commands.Bot):
 
         # UDP Sockets
         self.roverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) #Socket to send commands to rover
-        self.roverAddress = ('192.168.137.7', 7331)
+        self.roverAddress = ('rover.local', 7331)
 
         self.responseSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # Dedicated socket to listen to rover responses
         self.responseSocket.bind(('0.0.0.0', 7331))
